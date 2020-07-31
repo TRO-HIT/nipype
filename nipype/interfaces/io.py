@@ -1310,7 +1310,11 @@ class DataGrabber(IOBase):
                 outputs[key] = [x for x in outputs[key] if x is not None]
             else:
                 if any([val is None for val in outputs[key]]):
-                    outputs[key] = []
+                    if not self.inputs.raise_on_empty:
+                        outputs[key] = [[] if x is None else x for x in outputs[key]]
+                    else:
+                        outputs[key] = []
+            outputs[key] = [x for x in outputs[key] if x]
             if len(outputs[key]) == 0:
                 outputs[key] = None
             elif len(outputs[key]) == 1:
